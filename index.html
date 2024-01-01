@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            width: 100%;
+
+        }
+
+        .d-flex {
+            width: 100%;
+            padding: 6px;
+            display: flex;
+            justify-content: center;
+            justify-items: center;
+        }
+
+        .d-flex div {
+            display: inline-block;
+            justify-content: center;
+            justify-items: center;
+        }
+
+        .col {
+            width: 100%;
+            display: inline;
+            justify-content: center;
+            justify-items: center;
+            background-color:rgb(255, 247, 238);
+        }
+        .col-1 {
+            width: 100%;
+            display: inline-block;
+            justify-content: center;
+            justify-items: center;
+            background-color:rgb(255, 247, 238);
+        }
+        .col-1 div {
+            width: 100%;
+            padding: 5px;
+            display: block;
+            justify-content: center;
+            justify-items: center;
+        }
+        .col div {
+            width: 100%;
+            padding: 5px;
+            display: block;
+            justify-content: center;
+            justify-items: center;
+        }
+
+        .col div input {
+            padding-bottom: 5px;
+            padding-top: 5px;
+            width: 95%;
+        }
+
+        .container {
+            display: block;
+            position: relative;
+            padding-left: 35px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            font-size: 22px;
+        }
+
+        /* Hide the browser's default checkbox */
+        .container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Create a custom checkbox */
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: #eee;
+        }
+
+        /* On mouse-over, add a grey background color */
+        .container:hover input~.checkmark {
+            background-color: #ccc;
+        }
+
+        /* When the checkbox is checked, add a blue background */
+        .container input:checked~.checkmark {
+            background-color: #2196F3;
+        }
+
+        /* Create the checkmark/indicator (hidden when not checked) */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        /* Show the checkmark when checked */
+        .container input:checked~.checkmark:after {
+            display: block;
+        }
+
+        /* Style the checkmark/indicator */
+        .container .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg);
+        }
+    </style>
+    <script>
+        var majorCourses = {
+            'Info': {
+                'Web Development': ['Course 1', 'Course 2', 'Course 3'],
+                'Database Management': ['Course 4', 'Course 5', 'Course 6'],
+                'Network Security': ['Course 7', 'Course 8', 'Course 9']
+            },
+            'Physic': {
+                'Quantum Mechanics': ['Course 10', 'Course 11', 'Course 12'],
+                'Thermodynamics': ['Course 13', 'Course 14', 'Course 15'],
+                'Astrophysics': ['Course 16', 'Course 17', 'Course 18']
+            },
+            'Bio': {
+                'Cell Biology': ['Course 19', 'Course 20', 'Course 21'],
+                'Genetics': ['Course 22', 'Course 23', 'Course 24'],
+                'Ecology': ['Course 25', 'Course 26', 'Course 27']
+            }
+        };
+
+        var selectedDepartments = [];
+        var selectedMajors = [];
+
+        function updateDepartments() {
+            var departmentCheckboxes = document.getElementsByName('department');
+            var majorContainer = document.getElementById('major-container');
+            var majorCheckboxes = document.getElementById('major-checkboxes');
+
+            // Get selected departments
+            selectedDepartments = Array.from(departmentCheckboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            // Show majors if at least one department is selected, hide otherwise
+            majorContainer.style.display = selectedDepartments.length > 0 ? 'block' : 'none';
+
+            // Clear previous majors
+            majorCheckboxes.innerHTML = '';
+
+            // Populate majors based on selected departments
+            selectedDepartments.forEach(department => {
+                var majors = Object.keys(majorCourses[department]);
+                majors.forEach(major => {
+                    var checkbox = createCheckbox('major', major, updateCourses);
+                    majorCheckboxes.appendChild(checkbox);
+                });
+            });
+
+            // Trigger updateCourses when departments change to handle edge cases
+            updateCourses();
+        }
+
+        function createCheckbox(name, value, onchange) {
+            var container = document.createElement('label');
+            container.classList.add('container');
+
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = value;
+            checkbox.name = name;
+            checkbox.value = value;
+            checkbox.onchange = onchange;
+
+            var checkmark = document.createElement('span');
+            checkmark.classList.add('checkmark');
+
+            container.appendChild(document.createTextNode(value));
+            container.appendChild(checkbox);
+            container.appendChild(checkmark);
+
+            return container;
+        }
+
+        function updateCourses() {
+            var majorCheckboxes = document.getElementsByName('major');
+            var courseCheckboxContainer = document.getElementById('course-checkboxes');
+            //  var resultDiv = document.getElementById('result');
+
+            // Get selected majors
+            selectedMajors = Array.from(majorCheckboxes)
+                .filter(checkbox => checkbox.checked)
+                .map(checkbox => checkbox.value);
+
+            // Validate at least one department is selected
+            if (selectedDepartments.length === 0) {
+                alert('Please select at least one department.');
+                return;
+            }
+
+            // Clear previous results and course checkboxes
+            //  resultDiv.innerHTML = '';
+            courseCheckboxContainer.innerHTML = '';
+
+            // Display the result
+            /* resultDiv.innerHTML = 'Selected Departments: ' + selectedDepartments.join(', ') +
+                 '<br>Selected Majors: ' + selectedMajors.join(', ');*/
+
+            // Display course checkboxes for all selected majors
+            if (selectedMajors.length > 0) {
+                courseCheckboxContainer.style.display = 'block';
+
+                // Combine courses from all selected majors
+                var allCourses = [];
+                selectedDepartments.forEach(department => {
+                    selectedMajors.forEach(major => {
+                        if (majorCourses[department].hasOwnProperty(major)) {
+                            var courses = majorCourses[department][major];
+                            allCourses.push({ major: major, courses: courses });
+                        }
+                    });
+                });
+                console.log(allCourses);
+                /*  allCourses.forEach(course => {
+                      var checkbox = createCheckbox('course', course.courses);
+                      var numberOfGroupsInput = createNumberInput('groups_' + course, 'Number of Groups');
+                      var orderChoiceInput = createNumberInput('order_' + course, 'Order of Choice');
+  
+                      var div = document.createElement('div');
+                      div.appendChild(checkbox);
+                      div.appendChild(numberOfGroupsInput);
+                      div.appendChild(orderChoiceInput);
+  
+                      courseCheckboxContainer.appendChild(div);
+                  });*/
+                selectedMajors.forEach(major => {
+                    var majorCourses = allCourses.filter(entry => entry.major === major);
+                    console.log(majorCourses);
+                    if (majorCourses.length > 0) {
+                        var majorTableContainer = document.createElement('div');
+                        majorTableContainer.appendChild(document.createTextNode('Major: ' + major));
+
+                        majorCourses.forEach(entry => {
+                            var table = document.createElement('table');
+                            var headerRow = table.createTHead().insertRow();
+                            headerRow.insertCell().textContent = 'Course';
+                            headerRow.insertCell().textContent = 'Number of Groups';
+                            headerRow.insertCell().textContent = 'Order of Choice';
+
+                            entry.courses.forEach(course => {
+                                console.log(course)
+                                var row = table.insertRow();
+                                var checkbox = createCheckbox('course', course);
+                                var numberOfGroupsInput = createNumberInput('groups_' + course, 'Number of Groups');
+                                var orderChoiceInput = createNumberInput('order_' + course, 'Order of Choice');
+
+                                row.insertCell().appendChild(checkbox);
+                                row.insertCell().appendChild(numberOfGroupsInput);
+                                row.insertCell().appendChild(orderChoiceInput);
+                            });
+
+                            majorTableContainer.appendChild(table);
+                        });
+                        courseCheckboxContainer.appendChild(majorTableContainer);
+                    }
+                });
+            } else {
+                courseCheckboxContainer.style.display = 'none';
+            }
+
+
+        }
+
+        function createNumberInput(id, placeholder) {
+            var input = document.createElement('input');
+            input.type = 'number';
+            input.id = id;
+            input.name = id;
+            input.placeholder = placeholder;
+
+            return input;
+        }
+
+        function submitForm() {
+            var fields = [
+                { id: 'firstName', errorId: 'firstNameError', errorMessage: 'Veuillez entrer un prénom valide' },
+                { id: 'lastName', errorId: 'lastNameError', errorMessage: 'Veuillez entrer un nom de famille valide' },
+                { id: 'email', errorId: 'emailError', errorMessage: 'Veuillez entrer une adresse e-mail valide' },
+                { id: 'tel', errorId: 'telError', errorMessage: 'Veuillez entrer un numéro de téléphone valide' }
+            ];
+
+            var formIsValid = true;
+
+            fields.forEach(field => {
+                var input = document.getElementById(field.id);
+                var errorElement = document.getElementById(field.errorId);
+
+                if (!input.checkValidity()) {
+                    errorElement.textContent = field.errorMessage;
+                    formIsValid = false;
+                } else {
+                    errorElement.textContent = '';
+                }
+            });
+
+            if (formIsValid) {
+                // Form is valid, proceed to submit data
+
+                // Get form data
+                var formData = {
+                    courses: Array.from(document.getElementsByName('course'))
+                        .filter(checkbox => checkbox.checked)
+                        .map(checkbox => {
+                            var courseInfo = {
+                                firstName: document.getElementById('firstName').value,
+                                lastName: document.getElementById('lastName').value,
+                                department: getDepartmentForCourse(checkbox.value),
+                                major: getMajorForCourse(checkbox.value),
+                                course: checkbox.value,
+                                email: document.getElementById('email').value,
+                                tel: document.getElementById('tel').value,
+                                numberOfGroups: document.getElementById('groups_' + checkbox.value).value,
+                                orderOfChoice: document.getElementById('order_' + checkbox.value).value,
+                            };
+                            return courseInfo;
+                        }),
+                };
+
+                // Log form data
+                console.log(formData);
+
+                // Submit data
+                fetch('https://sheetdb.io/api/v1/t3cvwiwrjcb4b', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData.courses),
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        console.log(data);
+                        alert('Form submitted successfully!');
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error, if needed
+                    });
+            }
+        }
+
+
+
+        function getDepartmentForCourse(course) {
+            for (const department in majorCourses) {
+                for (const major in majorCourses[department]) {
+                    if (majorCourses[department][major].includes(course)) {
+                        return department;
+                    }
+                }
+            }
+            return null;
+        }
+
+        function getMajorForCourse(course) {
+            for (const department in majorCourses) {
+                for (const major in majorCourses[department]) {
+                    if (majorCourses[department][major].includes(course)) {
+                        return major;
+                    }
+                }
+            }
+            return null;
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <div id="form-container">
+
+        <form action="https://sheetdb.io/api/v1/t3cvwiwrjcb4b" method="post" id="sheetdb-form" class="d-flex">
+            <!-- Sample input fields in your HTML -->
+
+            <div class="">
+                <div style=" display: flex; justify-content: space-between; background-color:bisque; padding: 15px;">
+                    <img src="logo.svg" alt="" width="100px" height="100px">
+                    <img src="logo-fso.png" alt="" width="100px" height="100px">
+                </div>
+                <div class="col">
+                    <div class="flex">
+                        <div>
+                            <label for="firstName">Prenom:</label>
+                        </div>
+                        <div>
+                            <input type="text" id="firstName" name="firstName" required>
+                            <div class="error-message"style="color: red;" id="firstNameError"></div>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div>
+                            <label for="lastName">Nom:</label>
+                        </div>
+                        <div>
+                            <input type="text" id="lastName" name="lastName" required>
+                            <div class="error-message"style="color: red;" id="lastNameError"></div>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div>
+                            <label for="email">Email:</label>
+                        </div>
+                        <div>
+                            <input type="text" id="email" name="email" required>
+                            <div class="error-message"style="color: red;" id="emailError"></div>
+                        </div>
+                    </div>
+                    <div class="flex">
+                        <div>
+                            <label for="tel">Numero de telephone:</label>
+                        </div>
+                        <div>
+                            <input type="tel" id="tel" name="tel" required>
+                            <div class="error-message" style="color: red;" id="telError"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-1">
+                    <div class="flex">
+                        <label>Departements:</label>
+                        <div class="checkbox-group">
+                            <div  >
+                                <div >
+                                    <label for="Info" class="container">Information Technology
+                                        <input type="checkbox" id="Info" name="department" value="Info"
+                                            onchange="updateDepartments();">
+                                        <span class="checkmark">
+                                        </span>
+                                    </label>
+                                </div>
+                                <div><label class="container" for="Physic">Physics
+                                        <input type="checkbox" id="Physic" name="department" value="Physic"
+                                            onchange="updateDepartments();">
+                                        <span class="checkmark">
+                                        </span>
+                                    </label>
+                                </div>
+                                <div><label class="container" for="Bio">Biology
+                                        <input type="checkbox" id="Bio" name="department" value="Bio"
+                                            onchange="updateDepartments();">
+                                        <span class="checkmark">
+                                        </span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col" id="major-container">
+                    <div>
+                        <label>Filiere:</label>
+                        <div id="major-checkboxes"></div>
+                    </div>
+                </div>
+
+                <div class="col course-checkboxes" id="course-checkboxes"></div>
+
+                <!--<div class="col "id="result"></div>-->
+
+                <div class="  button-container" style="display: flex;">
+                    <button style="width: 100%; background-color: #2196F3; color: white; padding: 7px; border: 0; cursor: pointer; margin-top: 3px;" type="button" onclick="submitForm()">Envoyer</button>
+                </div>
+            </div>
+    </div>
+    </form>
+    </div>
+</body>
+
+</html>
